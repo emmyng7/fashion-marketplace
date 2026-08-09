@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #F9F6F0; /* The cream color from your original image */
   --foreground: #171717;
 }
 
