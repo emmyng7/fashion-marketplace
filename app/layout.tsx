@@ -1,10 +1,8 @@
-import type { Metadata } from "next";
-import "./globals.css";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Nextgen | Fashion Marketplace",
-  description: "Discover today's trends that define your unique style.",
-};
+import { CartProvider } from "@/components/CartProvider";
+import Navbar from "@/components/Navbar";
+import "./globals.css";
 
 export default function RootLayout({
   children,
@@ -13,8 +11,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        {children}
+      <body className="antialiased bg-[#F5F5F5]">
+        <CartProvider>
+          <Navbar />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

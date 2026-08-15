@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F9F6F0;
-  --foreground: #1A1A1A;
+  --background: #F5F5F5; /* Slightly lighter gray/cream */
+  --foreground: #111827; /* Dark gray text */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+}
+
+/* Custom hiding for scrollbars if needed */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; 
+  border-radius: 8px;
 }

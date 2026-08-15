@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 interface CartItem {
   id: number;
   name: string;
@@ -67,9 +69,13 @@ export default function CartDrawer({ isOpen, onClose, items }: CartDrawerProps) 
                 <span>Total</span>
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
-              <button className="w-full bg-black text-white py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors">
-                Checkout
-              </button>
+              
+              {/* UPDATED: This now links to the new full cart page */}
+              <Link href="/cart">
+                <button className="w-full bg-black text-white py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors">
+                  View Full Cart
+                </button>
+              </Link>
             </div>
           </div>
         )}
