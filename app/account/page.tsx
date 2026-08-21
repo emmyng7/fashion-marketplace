@@ -44,8 +44,6 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-[#F5F5F5] font-sans pb-20">
       
-      {/* --- GLOBAL NAVBAR (We simply use the layout's one, but we show the breadcrumb) --- */}
-      
       {/* --- BREADCRUMB --- */}
       <div className="max-w-7xl mx-auto px-4 pt-6 pb-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-black">Home</Link> <span className="mx-1">/</span> 
@@ -198,50 +196,6 @@ export default function AccountPage() {
 
         </div>
       </div>
-
-      {/* --- FOOTER --- */}
-      <footer className="mt-16 bg-white border-t border-gray-200 pt-12 pb-6">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center gap-2 mb-4">
-              <span className="text-3xl">🛍️</span> Shopigo
-            </Link>
-            <p className="text-sm text-gray-500">Quality products, great prices and exceptional customer service.</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-sm mb-4">Shop</h4>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link href="#" className="hover:text-black">All Products</Link></li>
-              <li><Link href="#" className="hover:text-black">Best Sellers</Link></li>
-              <li><Link href="#" className="hover:text-black">New Arrivals</Link></li>
-              <li><Link href="#" className="hover:text-black">Deals</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium text-sm mb-4">Customer Service</h4>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link href="#" className="hover:text-black">Help Center</Link></li>
-              <li><Link href="#" className="hover:text-black">Track Order</Link></li>
-              <li><Link href="#" className="hover:text-black">Returns & Refunds</Link></li>
-              <li><Link href="#" className="hover:text-black">Shipping Info</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium text-sm mb-4">Stay Connected</h4>
-            <div className="flex bg-gray-100 rounded-full overflow-hidden">
-              <input type="email" placeholder="Enter your email" className="flex-1 bg-transparent px-4 py-2 text-sm outline-none" />
-              <button className="bg-black text-white px-4 py-2 text-sm font-medium hover:bg-gray-800 transition">Subscribe</button>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
-          <p>&copy; 2024 Shopigo. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link href="#" className="hover:text-black">Privacy Policy</Link>
-            <Link href="#" className="hover:text-black">Terms & Conditions</Link>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );
