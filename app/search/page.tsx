@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { Suspense } from "react";
 
 export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "sneakers"; // Default to "sneakers" if no query
-  
+  return (
+    <Suspense fallback={<div className="text-center py-20 text-gray-500">Loading...</div>}>
+      <SearchResults />
+    </Suspense>
+  );
+}
+
+function SearchResults() {
   // Mock search results (filtering our product list)
   const allProducts = [
     { id: 1, name: "Nike Air Force 1 '07", price: 89.99, originalPrice: 120.00, rating: 4.5, reviews: 128, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300", category: "Men's Shoes" },
@@ -19,11 +23,6 @@ export default function SearchPage() {
     { id: 7, name: "Adidas Ultraboost 22", price: 159.99, rating: 4.9, reviews: 67, image: "https://images.unsplash.com/photo-1542272617-08f3dd4b4032?auto=format&fit=crop&w=300", category: "Men's Shoes" },
     { id: 8, name: "Puma RS-X Reinvent", price: 109.99, rating: 4.5, reviews: 53, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300", category: "Unisex Shoes" },
   ];
-
-  // Filter products based on the search query (simple mock logic)
-  const filteredProducts = allProducts.filter(product => 
-    product.name.toLowerCase().includes(query.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20">
@@ -37,8 +36,8 @@ export default function SearchPage() {
       {/* --- PAGE HEADER --- */}
       <div className="max-w-7xl mx-auto px-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#111827]">Search results for &quot;{query}&quot;</h1>
-          <p className="text-sm text-gray-500 mt-1">We found {filteredProducts.length} results for &quot;{query}&quot;</p>
+          <h1 className="text-3xl font-bold text-[#111827]">Search Results</h1>
+          <p className="text-sm text-gray-500 mt-1">Explore our latest products</p>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="text-gray-500">Sort by:</span>
@@ -206,7 +205,7 @@ export default function SearchPage() {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
+            {allProducts.map((product) => (
               <div key={product.id} className="bg-white p-4 rounded-[20px] shadow-sm hover:shadow-md transition duration-300 group relative">
                 <div className="relative aspect-square bg-gray-50 rounded-[16px] overflow-hidden mb-3">
                   {product.originalPrice && (
@@ -244,7 +243,7 @@ export default function SearchPage() {
 
           {/* Pagination */}
           <div className="flex justify-between items-center pt-4 text-xs">
-            <p className="text-gray-500">Showing 1-{filteredProducts.length} of {filteredProducts.length} results</p>
+            <p className="text-gray-500">Showing 1-8 of 8 results</p>
             <div className="flex gap-1">
               <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">1</button>
               <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">2</button>
