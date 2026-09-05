@@ -12,7 +12,7 @@ export default function SearchPage() {
 }
 
 function SearchResults() {
-  // Mock search results (filtering our product list)
+  // Beautiful static product list for the Search page
   const allProducts = [
     { id: 1, name: "Nike Air Force 1 '07", price: 89.99, originalPrice: 120.00, rating: 4.5, reviews: 128, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300", category: "Men's Shoes" },
     { id: 2, name: "Adidas Campus 00s", price: 84.99, originalPrice: 100.00, rating: 4.7, reviews: 98, image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=300", category: "Unisex Shoes" },
@@ -62,7 +62,6 @@ function SearchResults() {
               <button className="text-xs text-blue-600 hover:text-blue-800 underline">Clear all</button>
             </div>
 
-            {/* Category Filter */}
             <div className="mb-4 border-b border-gray-100 pb-4">
               <div className="flex justify-between items-center mb-2 cursor-pointer">
                 <p className="font-medium text-sm">Category</p>
@@ -84,7 +83,6 @@ function SearchResults() {
               </div>
             </div>
 
-            {/* Brand Filter */}
             <div className="mb-4 border-b border-gray-100 pb-4">
               <div className="flex justify-between items-center mb-2 cursor-pointer">
                 <p className="font-medium text-sm">Brand</p>
@@ -107,56 +105,6 @@ function SearchResults() {
               <button className="text-xs text-blue-600 hover:text-blue-800 underline mt-2">+ More</button>
             </div>
 
-            {/* Price Filter */}
-            <div className="mb-4 border-b border-gray-100 pb-4">
-              <div className="flex justify-between items-center mb-2 cursor-pointer">
-                <p className="font-medium text-sm">Price Range</p>
-                <span className="text-xs text-gray-400">⌃</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-gray-500">$20</span>
-                <div className="flex-1 h-1 bg-gray-200 rounded-full relative">
-                  <div className="absolute left-0 right-0 top-0 h-full bg-black rounded-full w-3/4"></div>
-                </div>
-                <span className="text-gray-500">$280</span>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <input type="text" defaultValue="20" className="w-14 border border-gray-200 rounded-full px-2 py-1 text-xs text-center outline-none focus:border-black" />
-                <span className="text-gray-400">—</span>
-                <input type="text" defaultValue="280" className="w-14 border border-gray-200 rounded-full px-2 py-1 text-xs text-center outline-none focus:border-black" />
-                <button className="bg-black text-white text-[10px] px-3 py-1 rounded-full font-medium hover:bg-gray-800 transition">Apply</button>
-              </div>
-            </div>
-
-            {/* Color Filter */}
-            <div className="mb-4 border-b border-gray-100 pb-4">
-              <div className="flex justify-between items-center mb-2 cursor-pointer">
-                <p className="font-medium text-sm">Color</p>
-                <span className="text-xs text-gray-400">⌃</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["black", "gray", "blue", "white", "beige", "red"].map((color) => (
-                  <button key={color} className={`w-6 h-6 rounded-full border border-gray-200 ${color === "white" ? "bg-white border-gray-300" : `bg-${color}-500`} hover:ring-2 hover:ring-black transition`}></button>
-                ))}
-                <button className="text-[10px] text-blue-600 hover:text-blue-800 underline px-1">+5</button>
-              </div>
-            </div>
-
-            {/* Size Filter */}
-            <div className="mb-4 border-b border-gray-100 pb-4">
-              <div className="flex justify-between items-center mb-2 cursor-pointer">
-                <p className="font-medium text-sm">Size (US)</p>
-                <span className="text-xs text-gray-400">⌃</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {["6", "7", "8", "9", "10", "11"].map((size) => (
-                  <button key={size} className="w-8 h-8 rounded-full border border-gray-200 text-[10px] font-medium hover:border-black transition">{size}</button>
-                ))}
-                <button className="w-8 h-8 rounded-full border border-gray-200 text-[10px] font-medium hover:border-black transition">+</button>
-              </div>
-            </div>
-
-            {/* Rating Filter */}
             <div className="mb-4 border-b border-gray-100 pb-4">
               <div className="flex justify-between items-center mb-2 cursor-pointer">
                 <p className="font-medium text-sm">Rating</p>
@@ -186,22 +134,6 @@ function SearchResults() {
 
         {/* --- RIGHT COLUMN: PRODUCTS --- */}
         <div className="lg:col-span-3 space-y-6">
-
-          {/* Banner */}
-          <div className="bg-gray-100 rounded-[20px] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=150" alt="Sneaker" className="w-16 h-16 rounded-full object-cover" />
-              <div>
-                <h3 className="font-bold text-lg">Step Up Your Style</h3>
-                <p className="text-sm text-gray-600">Discover the latest sneaker trends and find your perfect pair.</p>
-              </div>
-            </div>
-            <Link href="/shop">
-              <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-gray-800 transition whitespace-nowrap">
-                Shop Now
-              </button>
-            </Link>
-          </div>
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -239,18 +171,6 @@ function SearchResults() {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center pt-4 text-xs">
-            <p className="text-gray-500">Showing 1-8 of 8 results</p>
-            <div className="flex gap-1">
-              <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">1</button>
-              <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">2</button>
-              <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">3</button>
-              <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">...</button>
-              <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition">5</button>
-            </div>
           </div>
 
         </div>

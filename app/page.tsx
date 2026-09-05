@@ -1,46 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  rating: number;
-  image: string;
-  category: string;
-  description: string;
-};
 
 export default function Home() {
-  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        setPopularProducts(data.slice(0, 6));
-      });
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#111827] font-sans pb-20">
       
       {/* --- HERO SECTION --- */}
       <section className="relative w-full max-w-7xl mx-auto mt-6 px-4">
-        <div className="relative w-full h-[320px] md:h-[450px] rounded-[40px] overflow-hidden bg-blue-300">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-transparent z-10" />
-          <img 
-            src="https://images.unsplash.com/photo-1529139574466-a302a2debb6e?q=80&w=2000&auto=format&fit=crop" 
-            alt="Hero"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16 z-20 max-w-sm text-white">
-            <p className="text-xs font-bold uppercase tracking-wider bg-white/20 inline-block px-3 py-1 rounded-full mb-2 backdrop-blur-sm">Summer Arrival</p>
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight drop-shadow-md">Summer Arrival of Outfit</h1>
-            <p className="mt-2 text-sm md:text-base opacity-90 drop-shadow-md mb-4">Discover our latest collections.</p>
-            <Link href="/shop" className="inline-block bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-100 transition shadow-lg">
+        <div className="relative w-full h-[320px] md:h-[450px] rounded-[40px] bg-gradient-to-br from-blue-600 via-blue-500 to-purple-500 overflow-hidden">
+          
+          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16">
+            <p className="text-xs font-bold uppercase tracking-wider bg-white/20 text-white inline-block px-3 py-1 rounded-full mb-2 backdrop-blur-sm self-start">Summer Arrival</p>
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white drop-shadow-md">
+              Summer Arrival of Outfit
+            </h1>
+            <p className="mt-2 text-sm md:text-base text-white/90 drop-shadow-md mb-4">Discover our latest collections.</p>
+            <Link href="/shop" className="inline-block bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-100 transition shadow-lg self-start">
               Shop Now
             </Link>
           </div>
@@ -67,7 +43,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- LAYOUT: MAIN + SIDEBAR --- */}
+      {/* --- POPULAR PRODUCTS (Static for now) --- */}
       <div className="max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-12">
           <div>
