@@ -1,16 +1,73 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  rating: number;
+  description: string;
+};
 
 export default function Home() {
+  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
+  
+   // --- SLIDING HERO LOGIC ---
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1600&q=80", // Woman in stylish coat
+    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80", // Fashion models in colorful outfits
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80", // Woman carrying shopping bags
+    "https://images.unsplash.com/photo-1529139574466-a302a2debb6e?auto=format&fit=crop&w=1600&q=80", // Stylish woman in white top
+    "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1600&q=80", // Trendy street style
+  ];
+
+  // Automatically change slide every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        setPopularProducts(data.slice(0, 6));
+      });
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#111827] font-sans pb-20">
       
-      {/* --- HERO SECTION --- */}
+      {/* --- SLIDING HERO SECTION --- */}
       <section className="relative w-full max-w-7xl mx-auto mt-6 px-4">
-        <div className="relative w-full h-[320px] md:h-[450px] rounded-[40px] bg-gradient-to-br from-blue-600 via-blue-500 to-purple-500 overflow-hidden">
+        <div className="relative w-full h-[320px] md:h-[450px] rounded-[40px] overflow-hidden">
           
-          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16">
+          {/* Background Images that slide */}
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src={slide} 
+                alt="Fashion"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+
+          {/* Dark overlay to make text readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent z-10" />
+          
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 z-20">
             <p className="text-xs font-bold uppercase tracking-wider bg-white/20 text-white inline-block px-3 py-1 rounded-full mb-2 backdrop-blur-sm self-start">Summer Arrival</p>
             <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white drop-shadow-md">
               Summer Arrival of Outfit
@@ -20,6 +77,18 @@ export default function Home() {
               Shop Now
             </Link>
           </div>
+
+          {/* Slide Indicator Dots */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${index === currentSlide ? 'bg-white w-6' : 'bg-white/50'}`}
+              />
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -43,27 +112,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- POPULAR PRODUCTS (Static for now) --- */}
+      {/* --- POPULAR PRODUCTS --- */}
       <div className="max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-12">
           <div>
             <div className="flex justify-between items-end mb-6">
-              <h2 className="text-2xl font-bold">Browse by categories</h2>
+              <h2 className="text-2xl font-bold">Popular Products</h2>
               <Link href="/shop" className="text-sm font-medium text-gray-500 hover:text-black">View all</Link>
             </div>
+            
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {[
-                { name: "Shoes", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300" },
-                { name: "Bags", img: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&w=300" },
-                { name: "Clothing", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=300" },
-                { name: "Watches", img: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=300" },
-                { name: "Accessories", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=300" },
-                { name: "Beauty", img: "https://images.unsplash.com/photo-1596462502278-27bfdd403348?auto=format&fit=crop&w=300" },
-              ].map((cat) => (
-                <Link key={cat.name} href="/shop" className="relative h-36 rounded-[24px] overflow-hidden bg-white shadow-sm hover:shadow-md transition group">
-                  <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-0 right-0 text-center text-white font-medium text-sm">{cat.name}</div>
+              {popularProducts.map((product) => (
+                <Link key={product.id} href={`/shop/${product.id}`} className="bg-white p-3 rounded-[16px] shadow-sm hover:shadow-md transition group">
+                  <div className="aspect-square bg-gray-50 rounded-[12px] overflow-hidden mb-2">
+                    <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  </div>
+                  <p className="text-xs font-medium line-clamp-1">{product.name}</p>
+                  <p className="text-[10px] text-gray-500">{product.category}</p>
+                  <p className="font-bold text-sm mt-1">${product.price}</p>
                 </Link>
               ))}
             </div>

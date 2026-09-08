@@ -8,11 +8,14 @@ type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  size?: string;
+  color?: string;
 };
 
 type CartContextType = {
   items: CartItem[];
   addToCart: (product: any) => void;
+  removeFromCart: (productId: number) => void; // THIS IS WHAT'S MISSING!
   cartCount: number;
   totalPrice: number;
 };
@@ -20,7 +23,7 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  // 1. Load from Local Storage when the app starts
+  // Load cart from Local Storage when the app starts
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("shopigo_cart");
@@ -29,7 +32,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return [];
   });
 
-  // 2. Save to Local Storage whenever items change
+  // Save cart to Local Storage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("shopigo_cart", JSON.stringify(items));
@@ -49,16 +52,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
         name: product.name, 
         price: product.price, 
         image: product.image, 
-        quantity: 1 
+        quantity: 1,
+        size: product.size,
+        color: product.color
       }];
     });
+  };
+
+  // NEW: Remove item from cart
+  const removeFromCart = (productId: number) => {
+    setItems((prev) => prev.filter((item) => item.id !== productId));
   };
 
   const cartCount = items.reduce((total, item) => total + item.quantity, 0);
   const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, cartCount, totalPrice }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, cartCount, totalPrice }}>
       {children}
     </CartContext.Provider>
   );

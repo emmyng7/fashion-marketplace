@@ -7,12 +7,18 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const { cartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCatOpen, setIsCatOpen] = useState(false); // For Desktop Categories
-  const [isMobileCatOpen, setIsMobileCatOpen] = useState(false); // For Mobile Categories
+  const [isCatOpen, setIsCatOpen] = useState(false);
+  const [isMobileCatOpen, setIsMobileCatOpen] = useState(false);
   
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
+    
+    // ✅ Check if user is logged in (Local Storage)
+    const savedEmail = localStorage.getItem("btm_login_email");
+    setIsLoggedIn(!!savedEmail);
   }, []);
 
   const handleLinkClick = () => {
@@ -21,20 +27,20 @@ export default function Navbar() {
     setIsMobileCatOpen(false);
   };
 
-  // Beautiful Category Data
+  // Category Data with specific links
   const categories = [
-    { name: "Shoes", icon: "👟", href: "/shop" },
-    { name: "Bags", icon: "👜", href: "/shop" },
-    { name: "Clothing", icon: "👕", href: "/shop" },
-    { name: "Watches", icon: "⌚", href: "/shop" },
-    { name: "Accessories", icon: "🕶️", href: "/shop" },
-    { name: "Beauty", icon: "🧴", href: "/shop" },
+    { name: "Shoes", icon: "👟", href: "/shop?category=Shoes" },
+    { name: "Bags", icon: "👜", href: "/shop?category=Bags" },
+    { name: "Clothing", icon: "👕", href: "/shop?category=Clothing" },
+    { name: "Watches", icon: "⌚", href: "/shop?category=Watches" },
+    { name: "Accessories", icon: "🕶️", href: "/shop?category=Accessories" },
+    { name: "Beauty", icon: "🧴", href: "/shop?category=Beauty" },
   ];
 
   return (
     <div className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-[999]">
       
-      {/* --- TOP BAR (Gray bar) --- */}
+      {/* --- TOP BAR --- */}
       <div className="border-b border-gray-200 py-2 text-[10px] md:text-xs text-gray-500 bg-white">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <div className="flex gap-4 md:gap-6">
@@ -48,10 +54,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* --- MAIN NAVBAR (White bar) --- */}
+      {/* --- MAIN NAVBAR --- */}
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
         
-        {/* --- LOGO: EMOJI + BTM --- */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
           <span className="text-3xl">🛍️</span>
           <span className="text-2xl font-serif font-bold tracking-wider text-[#111827]">
@@ -59,7 +64,6 @@ export default function Navbar() {
           </span>
         </Link>
         
-        {/* --- DESKTOP LINKS (Hidden on small screens) --- */}
         <div className="hidden md:flex gap-8 text-sm font-medium text-gray-700 items-center">
           <Link href="/" className="hover:text-black transition border-b-2 border-transparent hover:border-black pb-1">Home</Link>
           <Link href="/shop" className="hover:text-black transition border-b-2 border-transparent hover:border-black pb-1">Shop</Link>
@@ -77,7 +81,6 @@ export default function Navbar() {
               Categories <span className={`transition-transform duration-300 ${isCatOpen ? 'rotate-180' : ''}`}>⌄</span>
             </button>
 
-            {/* The Desktop Dropdown Box */}
             {isCatOpen && (
               <div className="absolute top-full left-0 mt-2 bg-white rounded-[16px] shadow-xl border border-gray-100 p-6 w-[450px] grid grid-cols-2 gap-4 animate-fadeIn">
                 {categories.map((cat) => (
@@ -104,10 +107,8 @@ export default function Navbar() {
           <Link href="/contact" className="hover:text-black transition flex items-center gap-1 pb-1 border-b-2 border-transparent hover:border-black">Support</Link>
         </div>
         
-        {/* --- RIGHT SIDE: SEARCH, ICONS, & HAMBURGER --- */}
         <div className="flex items-center gap-3 md:gap-4">
           
-          {/* Search Bar Form (Hidden on mobile) */}
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -130,7 +131,8 @@ export default function Navbar() {
             </button>
           </form>
           
-          <Link href="/account">
+          {/* ✅ SMART PERSON ICON */}
+          <Link href={isLoggedIn ? "/account" : "/login"}>
             <button className="text-2xl hover:text-black transition">👤</button>
           </Link>
           
@@ -147,7 +149,6 @@ export default function Navbar() {
             </button>
           </Link>
 
-          {/* --- HAMBURGER MENU TOGGLE --- */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-2xl text-gray-700 hover:text-black transition"
@@ -164,7 +165,6 @@ export default function Navbar() {
             <Link href="/" onClick={handleLinkClick} className="hover:text-black transition py-2 border-b border-gray-100">Home</Link>
             <Link href="/shop" onClick={handleLinkClick} className="hover:text-black transition py-2 border-b border-gray-100">Shop</Link>
             
-            {/* --- MOBILE CATEGORIES ACCORDION --- */}
             <div className="py-2 border-b border-gray-100">
               <button 
                 onClick={() => setIsMobileCatOpen(!isMobileCatOpen)}
@@ -193,9 +193,13 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            {/* ------------------------------ */}
             
             <Link href="/contact" onClick={handleLinkClick} className="hover:text-black transition py-2">Support</Link>
+            
+            {/* ✅ SMART MOBILE LOGIN LINK */}
+            <Link href={isLoggedIn ? "/account" : "/login"} onClick={handleLinkClick} className="hover:text-black transition py-2">
+              {isLoggedIn ? "My Account" : "Sign In"}
+            </Link>
           </div>
         </div>
       )}

@@ -2,29 +2,43 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
   const { items, cartCount, totalPrice } = useCart();
   const [shippingMethod, setShippingMethod] = useState("standard");
+  
+  // ✅ THIS PREVENTS THE HYDRATION ERROR
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Calculate shipping cost
   const shippingCost = shippingMethod === "express" ? 9.99 : shippingMethod === "overnight" ? 19.99 : 0;
   const discount = 15.00;
   const finalTotal = totalPrice + shippingCost - discount;
 
+  // Wait for browser to load before rendering cart items
+  if (!isMounted) {
+    return <div className="min-h-screen flex items-center justify-center text-gray-500">Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20">
       
-      {/* --- CLEAN BACK TO CART LINK (No background color, just a clean link) --- */}
-      <div className="max-w-7xl mx-auto px-4 pt-4 pb-2 flex justify-end">
-        <Link href="/cart" className="text-sm text-gray-500 hover:text-black transition flex items-center gap-1">
-          ← Back to Cart
-        </Link>
+      {/* --- SIMPLE HEADER WITH BACK LINK ONLY --- */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div></div>
+          <Link href="/cart" className="text-sm text-gray-500 hover:text-black transition flex items-center gap-1">
+            ← Back to Cart
+          </Link>
+        </div>
       </div>
 
       {/* --- BREADCRUMB --- */}
-      <div className="max-w-7xl mx-auto px-4 pb-2 text-sm text-gray-500">
+      <div className="max-w-7xl mx-auto px-4 pt-6 pb-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-black">Home</Link> <span className="mx-1">/</span> 
         <Link href="/cart" className="hover:text-black">Cart</Link> <span className="mx-1">/</span> 
         <span className="text-black font-medium">Checkout</span>

@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { useCart } from "@/components/CartProvider";
 
-// Mock Wishlist Data
+// Mock data with real, working image URLs
 const wishlistItems = [
   {
     id: 1,
@@ -38,7 +40,7 @@ const wishlistItems = [
     id: 4,
     name: "Minimal Sneakers",
     price: 69.99,
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=300",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300",
     color: "White",
     size: "42",
     stock: "In Stock",
@@ -69,26 +71,57 @@ const wishlistItems = [
 // Mock "You May Also Like" products
 const alsoLike = [
   { id: 101, name: "Eau de Parfum", price: 49.99, image: "https://images.unsplash.com/photo-1596462502278-27bfdd403348?auto=format&fit=crop&w=150" },
-  { id: 102, name: "Leather Belt", price: 29.99, image: "https://images.unsplash.com/photo-1542272617-08f3dd4b4032?auto=format&fit=crop&w=150" },
+  { id: 102, name: "Leather Belt", price: 29.99, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=150" },
   { id: 103, name: "Travel Backpack", price: 79.99, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=150" },
   { id: 104, name: "Baseball Cap", price: 15.99, image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89d?auto=format&fit=crop&w=150" },
 ];
 
 export default function WishlistPage() {
+  const { addToCart } = useCart();
+  const [items, setItems] = useState(wishlistItems);
+
   // Calculate totals
-  const totalItems = wishlistItems.length;
-  const estTotalValue = wishlistItems.reduce((sum, item) => sum + item.price, 0);
+  const totalItems = items.length;
+  const estTotalValue = items.reduce((sum, item) => sum + item.price, 0);
+
+  // Add a single item to the cart
+  const handleAddToCart = (item: any) => {
+    addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: 1,
+      size: item.size,
+      color: item.color,
+    });
+  };
+
+  // Remove an item from the wishlist
+  const handleRemove = (id: number) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  // Add ALL items to the cart
+  const handleAddAll = () => {
+    items.forEach((item) => handleAddToCart(item));
+  };
+
+  // Move ALL items to the cart (and clear wishlist)
+  const handleMoveAll = () => {
+    handleAddAll();
+    setItems([]);
+  };
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20">
       
-      {/* --- BREADCRUMB --- */}
+      {/* --- PAGE HEADER --- */}
       <div className="max-w-7xl mx-auto px-4 pt-6 pb-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-black">Home</Link> <span className="mx-1">/</span> 
         <span className="text-black font-medium">Wishlist</span>
       </div>
 
-      {/* --- PAGE HEADER --- */}
       <div className="max-w-7xl mx-auto px-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#111827]">My Wishlist ({totalItems})</h1>
@@ -116,9 +149,10 @@ export default function WishlistPage() {
 
           {/* Items List */}
           <div className="divide-y divide-gray-100">
-            {wishlistItems.map((item) => (
+            {items.map((item) => (
               <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-4 md:px-6 py-6 items-center">
                 <div className="md:col-span-5 flex items-center gap-4">
+                  {/* REAL IMAGE NOW */}
                   <div className="w-16 h-20 bg-gray-100 rounded-[12px] overflow-hidden flex-shrink-0">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
@@ -140,8 +174,20 @@ export default function WishlistPage() {
                 <div className="md:col-span-2 text-center text-xs text-gray-500">{item.addedOn}</div>
                 
                 <div className="md:col-span-1 flex justify-center gap-2">
-                  <button className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-xs hover:bg-gray-800 transition">🛒</button>
-                  <button className="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-xs hover:bg-gray-200 transition">🗑️</button>
+                  {/* Working "Add to Cart" */}
+                  <button 
+                    onClick={() => handleAddToCart(item)}
+                    className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-xs hover:bg-gray-800 transition"
+                  >
+                    🛒
+                  </button>
+                  {/* Working "Remove" */}
+                  <button 
+                    onClick={() => handleRemove(item.id)}
+                    className="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-xs hover:bg-gray-200 transition"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
             ))}
@@ -152,7 +198,10 @@ export default function WishlistPage() {
             <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-medium hover:underline text-gray-600 hover:text-black">
               ← Continue Shopping
             </Link>
-            <button className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-700 transition">
+            <button 
+              onClick={() => setItems([])}
+              className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-700 transition"
+            >
               🗑️ Clear Wishlist
             </button>
           </div>
@@ -177,16 +226,18 @@ export default function WishlistPage() {
             </div>
 
             <div className="space-y-2">
-              <button className="w-full bg-black text-white py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-2 hover:bg-gray-800 transition">
+              {/* Working "Add All to Cart" */}
+              <button onClick={handleAddAll} className="w-full bg-black text-white py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-2 hover:bg-gray-800 transition">
                 🛒 Add All to Cart
               </button>
-              <button className="w-full border border-gray-300 bg-white text-black py-3 rounded-full text-sm font-semibold hover:bg-gray-50 transition">
+              {/* Working "Move All to Cart" */}
+              <button onClick={handleMoveAll} className="w-full border border-gray-300 bg-white text-black py-3 rounded-full text-sm font-semibold hover:bg-gray-50 transition">
                 Move All to Cart
               </button>
             </div>
           </div>
 
-          {/* You May Also Like */}
+          {/* You May Also Like (Now with working links!) */}
           <div className="bg-white rounded-[24px] p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-lg">You May Also Like</h3>
@@ -195,7 +246,7 @@ export default function WishlistPage() {
             
             <div className="space-y-3">
               {alsoLike.map((product) => (
-                <div key={product.id} className="flex items-center justify-between group cursor-pointer">
+                <Link key={product.id} href={`/shop/${product.id}`} className="flex items-center justify-between group cursor-pointer">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-14 bg-gray-100 rounded-[10px] overflow-hidden flex-shrink-0">
                       <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
@@ -206,7 +257,7 @@ export default function WishlistPage() {
                     </div>
                   </div>
                   <button className="text-gray-400 hover:text-red-500 transition">♡</button>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import { CartProvider } from "@/components/CartProvider";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer"; // <-- Import the Footer
+import Footer from "@/components/Footer";
 import { usePathname } from "next/navigation";
 import "./globals.css";
 
@@ -13,10 +13,11 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
-  // Hide the Navbar ONLY on the checkout page (to keep it clean)
+  // ✅ Hide Navbar only on Checkout page
   const showNavbar = pathname !== "/checkout";
-  // Show the Footer on ALL pages (including checkout)
-  const showFooter = true;
+
+  // ✅ Hide Footer on Checkout AND Cart pages
+  const showFooter = pathname !== "/checkout" && pathname !== "/cart";
 
   return (
     <html lang="en">
@@ -24,7 +25,7 @@ export default function RootLayout({
         <CartProvider>
           {showNavbar && <Navbar />}
           {children}
-          {showFooter && <Footer />} {/* <-- Footer now shows everywhere */}
+          {showFooter && <Footer />}
         </CartProvider>
       </body>
     </html>
