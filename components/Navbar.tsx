@@ -200,6 +200,11 @@ export default function Navbar() {
             <Link href={isLoggedIn ? "/account" : "/login"} onClick={handleLinkClick} className="hover:text-black transition py-2">
               {isLoggedIn ? "My Account" : "Sign In"}
             </Link>
+            
+            {/* ✅ NEW: CREATE ACCOUNT LINK */}
+            <Link href="/register" onClick={handleLinkClick} className="hover:text-black transition py-2">
+              Create Account
+            </Link>
           </div>
         </div>
       )}
