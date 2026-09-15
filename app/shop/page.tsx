@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
-
+import { ProductGridSkeleton } from "@/components/Skeleton";
 type Product = {
   id: number;
   name: string;
@@ -57,11 +57,11 @@ function ShopContent() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-gray-500">Loading products...</div>
+          <ProductGridSkeleton count={12} />
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-20 text-gray-500">No {activeCategory} products found.</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.map((product) => (
               <div key={product.id} className="bg-white p-4 rounded-[20px] shadow-sm hover:shadow-md transition duration-300 group relative">
                 <div className="relative aspect-square bg-gray-50 rounded-[16px] overflow-hidden mb-3">

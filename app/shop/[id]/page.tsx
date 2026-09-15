@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useEffect, useState } from "react";
+import { ProductDetailSkeleton } from "@/components/Skeleton";
 
 type Product = {
   id: number;
@@ -20,12 +21,12 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   
-  // Interactive State
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState("#9DB8D4");
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [addedToWishlist, setAddedToWishlist] = useState(false);
+  const [toast, setToast] = useState<string | null>(null); // ✅ Toast state
 
   // Fetch product from our API
   useEffect(() => {
@@ -45,15 +46,27 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     }
   }, [id]);
 
-  if (!product) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-500">Loading product...</div>;
-  }
+  // ✅ Auto-hide toast after 3 seconds
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
-  // Mock data for colors and sizes
+  if (!product) {
+  return (
+    <div className="min-h-screen bg-[#F5F5F5] pb-20">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <ProductDetailSkeleton />
+      </div>
+    </div>
+  );
+}
+
   const colors = ["#9DB8D4", "#2F4F4F", "#DAA520", "#000000"];
   const sizes = ["S", "M", "L", "XL", "XXL"];
 
-  // Build the product object to send to cart
   const buildCartItem = () => ({
     id: product.id,
     name: product.name,
@@ -64,18 +77,17 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     color: selectedColor,
   });
 
-  // Add to Cart
   const handleAddToCart = () => {
     addToCart(buildCartItem());
+    setToast(`✅ Added "${product.name}" to cart!`);
   };
 
-  // Buy Now: Add to cart and go to checkout
   const handleBuyNow = () => {
     addToCart(buildCartItem());
     window.location.href = "/checkout";
   };
 
-  // Add to Wishlist
+  // ✅ Add to Wishlist WITHOUT any alert
   const handleAddToWishlist = () => {
     if (typeof window !== "undefined") {
       const wishlist = JSON.parse(localStorage.getItem("btm_wishlist") || "[]");
@@ -94,9 +106,12 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
         wishlist.push(newItem);
         localStorage.setItem("btm_wishlist", JSON.stringify(wishlist));
         setAddedToWishlist(true);
-        alert("Added to Wishlist!");
+        setToast(`❤️ Added "${product.name}" to wishlist!`);
+        // ✅ Notify the Navbar to update the badge count
+        window.dispatchEvent(new Event("storage"));
       } else {
-        alert("Already in Wishlist!");
+        // If already exists, just show a polite toast (no alert)
+        setToast(`ℹ️ "${product.name}" is already in your wishlist.`);
       }
     }
   };
@@ -104,6 +119,13 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20">
       
+      {/* ✅ PROFESSIONAL TOAST NOTIFICATION */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-[9999] bg-black text-white px-6 py-4 rounded-[16px] shadow-2xl flex items-center gap-3 animate-fadeIn">
+          <span className="text-sm font-medium">{toast}</span>
+        </div>
+      )}
+
       {/* --- BREADCRUMB --- */}
       <div className="max-w-7xl mx-auto px-4 pt-6 pb-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-black">Home</Link> <span className="mx-1">/</span> 
@@ -216,7 +238,6 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                  {/* ADD TO CART */}
                   <button 
                     onClick={handleAddToCart}
                     className="flex-1 bg-black text-white py-3.5 rounded-full font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
@@ -224,7 +245,6 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                     🛒 Add to Cart
                   </button>
                   
-                  {/* BUY NOW - GOES TO CHECKOUT */}
                   <button 
                     onClick={handleBuyNow}
                     className="flex-1 border border-gray-300 text-black py-3.5 rounded-full font-semibold hover:bg-gray-50 transition-colors"
@@ -234,12 +254,14 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                 </div>
               </div>
               
-              {/* ADD TO WISHLIST - SAVES TO LOCAL STORAGE */}
+              {/* ✅ Add to Wishlist WITHOUT alert */}
               <button 
                 onClick={handleAddToWishlist}
                 className="mt-4 flex items-center gap-2 text-sm text-gray-500 hover:text-black cursor-pointer transition"
               >
-                <span>{addedToWishlist ? "♥️" : "♡"}</span> 
+                <span className={addedToWishlist ? "text-red-500 text-lg" : "text-lg"}>
+                  {addedToWishlist ? "♥️" : "♡"}
+                </span> 
                 {addedToWishlist ? "Added to Wishlist" : "Add to Wishlist"}
               </button>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useEffect, useState } from "react";
+import { SkeletonBox } from "@/components/Skeleton";
 
 export default function CheckoutPage() {
   const { items, cartCount, totalPrice } = useCart();
@@ -20,9 +21,21 @@ export default function CheckoutPage() {
   const finalTotal = totalPrice + shippingCost - discount;
 
   // Wait for browser to load before rendering cart items
-  if (!isMounted) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-500">Loading...</div>;
-  }
+ if (!isMounted) {
+  return (
+    <div className="min-h-screen bg-[#F5F5F5] pb-20">
+      <div className="max-w-7xl mx-auto px-4 pt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <SkeletonBox className="h-96 w-full" />
+          <SkeletonBox className="h-64 w-full" />
+        </div>
+        <div className="lg:col-span-1">
+          <SkeletonBox className="h-[500px] w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20">
@@ -82,47 +95,59 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">First Name *</label>
-                <input type="text" defaultValue="John" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="text" placeholder="Enter your first name" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Last Name *</label>
-                <input type="text" defaultValue="Doe" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="text" placeholder="Enter your last name" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-medium text-gray-700 mb-1">Email Address *</label>
-                <input type="email" defaultValue="john.doe@mail.com" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="email" placeholder="Enter your email" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-medium text-gray-700 mb-1">Street Address *</label>
-                <input type="text" defaultValue="123 Main Street" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="text" placeholder="Enter your street address" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-medium text-gray-700 mb-1">Apartment, suite, unit, etc. (optional)</label>
-                <input type="text" defaultValue="Apt 4B" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="text" placeholder="Apartment, suite, etc." className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">City *</label>
-                <input type="text" defaultValue="New York" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                <input type="text" placeholder="Enter your city" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">State / Province *</label>
-                <select className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition bg-white">
-                  <option>New York</option>
-                  <option>California</option>
-                  <option>Texas</option>
+                <select defaultValue="Lagos" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition bg-white">
+                  <option>Lagos</option>
+                  <option>Abuja (FCT)</option>
+                  <option>Rivers</option>
+                  <option>Kano</option>
+                  <option>Oyo</option>
+                  <option>Kaduna</option>
+                  <option>Enugu</option>
+                  <option>Delta</option>
+                  <option>Anambra</option>
+                  <option>Other</option>
                 </select>
               </div>
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">ZIP / Postal Code *</label>
-                  <input type="text" defaultValue="10001" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
+                  <input type="text" placeholder="Enter ZIP code" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Country *</label>
-                  <select className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition bg-white">
+                  <select defaultValue="Nigeria" className="w-full border border-gray-200 rounded-[12px] px-4 py-3 text-sm outline-none focus:border-black transition bg-white">
+                    <option>Nigeria</option>
+                    <option>Ghana</option>
+                    <option>South Africa</option>
+                    <option>Kenya</option>
                     <option>United States</option>
                     <option>Canada</option>
                     <option>United Kingdom</option>
+                    <option>Australia</option>
                   </select>
                 </div>
               </div>
@@ -229,8 +254,8 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-sm text-gray-900 line-clamp-1">{item.name}</p>
-                      <p className="text-xs text-gray-500">Color: Light Blue</p>
-                      <p className="text-xs text-gray-500">Size: M</p>
+                      <p className="text-xs text-gray-500">Color: {item.color || "Default"}</p>
+                      <p className="text-xs text-gray-500">Size: {item.size || "M"}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-sm">${(item.price * item.quantity).toFixed(2)}</p>

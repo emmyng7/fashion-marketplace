@@ -15,9 +15,11 @@ type CartItem = {
 type CartContextType = {
   items: CartItem[];
   addToCart: (product: any) => void;
-  removeFromCart: (productId: number) => void; // THIS IS WHAT'S MISSING!
+  removeFromCart: (productId: number) => void;
   cartCount: number;
   totalPrice: number;
+  wishlistCount: number;
+  setWishlistCount: (count: number) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -32,12 +34,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return [];
   });
 
+  // ✅ Wishlist count state
+  const [wishlistCount, setWishlistCount] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("btm_wishlist");
+      return saved ? JSON.parse(saved).length : 0;
+    }
+    return 0;
+  });
+
   // Save cart to Local Storage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("shopigo_cart", JSON.stringify(items));
     }
   }, [items]);
+
+  // ✅ Sync wishlist count from Local Storage whenever it changes
+  useEffect(() => {
+    const handleStorage = () => {
+      const saved = localStorage.getItem("btm_wishlist");
+      setWishlistCount(saved ? JSON.parse(saved).length : 0);
+    };
+    window.addEventListener("storage", handleStorage);
+    // Also run on mount
+    handleStorage();
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const addToCart = (product: any) => {
     setItems((prev) => {
@@ -59,7 +82,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // NEW: Remove item from cart
   const removeFromCart = (productId: number) => {
     setItems((prev) => prev.filter((item) => item.id !== productId));
   };
@@ -68,7 +90,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, cartCount, totalPrice }}>
+    <CartContext.Provider value={{ 
+      items, 
+      addToCart, 
+      removeFromCart, 
+      cartCount, 
+      totalPrice,
+      wishlistCount,
+      setWishlistCount
+    }}>
       {children}
     </CartContext.Provider>
   );

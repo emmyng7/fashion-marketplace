@@ -16,8 +16,21 @@ export default function RootLayout({
   // ✅ Hide Navbar only on Checkout page
   const showNavbar = pathname !== "/checkout";
 
-  // ✅ Hide Footer on Checkout AND Cart pages
-  const showFooter = pathname !== "/checkout" && pathname !== "/cart";
+  // ✅ Hide Footer on these pages (focused/checkout experiences):
+  const hiddenFooterPages = [
+    "/checkout",
+    "/cart",
+    "/wishlist",
+    "/login",
+    "/register",
+    "/account",
+     // ✅ NEW: Contact page — No footer
+  ];
+
+  // ✅ Also hide footer on ANY product detail page (e.g., /shop/1)
+  const isProductDetailPage = pathname.startsWith("/shop/") && pathname !== "/shop";
+
+  const showFooter = !hiddenFooterPages.includes(pathname) && !isProductDetailPage;
 
   return (
     <html lang="en">

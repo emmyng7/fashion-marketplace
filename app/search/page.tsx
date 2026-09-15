@@ -2,10 +2,19 @@
 
 import Link from "next/link";
 import { Suspense } from "react";
+import { ProductGridSkeleton } from "@/components/Skeleton";
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="text-center py-20 text-gray-500">Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F5F5F5] pb-20">
+        <div className="max-w-7xl mx-auto px-4 pt-8">
+          <div className="h-10 bg-gray-200 rounded-full w-1/4 mb-8 animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded-full w-1/3 mb-8 animate-pulse" />
+          <ProductGridSkeleton count={8} />
+        </div>
+      </div>
+    }>
       <SearchResults />
     </Suspense>
   );

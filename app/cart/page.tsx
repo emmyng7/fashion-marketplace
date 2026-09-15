@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useEffect, useState } from "react";
+import { CartSkeleton } from "@/components/Skeleton";
 
 export default function CartPage() {
   const { items, cartCount, totalPrice, removeFromCart } = useCart();
@@ -17,9 +18,16 @@ export default function CartPage() {
   const shipping = 5.99;
   const finalTotal = subtotal + shipping;
 
-  if (!isMounted) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-500">Loading...</div>;
-  }
+ if (!isMounted) {
+  return (
+    <div className="min-h-screen bg-[#F5F5F5] pb-20 pt-8">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="h-8 bg-gray-200 rounded-full w-1/4 mb-8 animate-pulse" />
+        <CartSkeleton />
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-20 pt-8">
